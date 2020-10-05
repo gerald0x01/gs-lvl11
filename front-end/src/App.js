@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import api from "./services/api";
 
 import "./App.css";
-import backgroundImage from "./assets/background.jpg";
 
 import Header from "./components/Header";
 
@@ -10,14 +10,19 @@ function App() {
     "App Development",
     "Web Front-End",
   ]);
-  // UseState retorna um array com 2 posições.
-  // 1. Variável com o seu valor inicial.
-  // 2. Função para atualizarmos esse valor.
 
-  function handleAddProject() {
-    setProjects([...projects, `Novo projeto ${Date.now()}`]);
+  useEffect(() => {
+    api.get("projects").then((response) => {
+      setProject(response.data);
+    });
+  }, []);
 
-    console.log(projects);
+  async function handleAddProject() {
+    const response = await api.post("projects", {});
+
+    const project = response.data;
+
+    setProjects([...projects, project]);
   }
 
   return (
